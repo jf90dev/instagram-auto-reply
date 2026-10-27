@@ -1,0 +1,1016 @@
+{
+  "manifestVersion": 3,
+  "env": {
+    "PATH": "$(npx -c \"node --print process.env.PATH\")"
+  },
+  "tasks": {
+    "build": {
+      "name": "build",
+      "description": "Full release build",
+      "steps": [
+        {
+          "spawn": "default"
+        },
+        {
+          "spawn": "pre-compile"
+        },
+        {
+          "spawn": "compile"
+        },
+        {
+          "spawn": "post-compile"
+        },
+        {
+          "spawn": "test"
+        },
+        {
+          "spawn": "package"
+        }
+      ]
+    },
+    "bundle": {
+      "name": "bundle",
+      "description": "Prepare assets",
+      "steps": [
+        {
+          "spawn": "bundle:lambda/generate-reply/generate-reply.lambda"
+        },
+        {
+          "spawn": "bundle:lambda/get-context/get-context.lambda"
+        },
+        {
+          "spawn": "bundle:lambda/receive-webhook/receive-webhook.lambda"
+        },
+        {
+          "spawn": "bundle:lambda/record-outcome/record-outcome.lambda"
+        },
+        {
+          "spawn": "bundle:lambda/send-reply/send-reply.lambda"
+        }
+      ]
+    },
+    "bundle:lambda/generate-reply/generate-reply.lambda": {
+      "name": "bundle:lambda/generate-reply/generate-reply.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/generate-reply/generate-reply.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/generate-reply/generate-reply.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/generate-reply/generate-reply.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/generate-reply/generate-reply.lambda:watch": {
+      "name": "bundle:lambda/generate-reply/generate-reply.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/generate-reply/generate-reply.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/generate-reply/generate-reply.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/generate-reply/generate-reply.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/get-context/get-context.lambda": {
+      "name": "bundle:lambda/get-context/get-context.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/get-context/get-context.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/get-context/get-context.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/get-context/get-context.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/get-context/get-context.lambda:watch": {
+      "name": "bundle:lambda/get-context/get-context.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/get-context/get-context.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/get-context/get-context.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/get-context/get-context.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/receive-webhook/receive-webhook.lambda": {
+      "name": "bundle:lambda/receive-webhook/receive-webhook.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/receive-webhook/receive-webhook.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/receive-webhook/receive-webhook.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/receive-webhook/receive-webhook.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/receive-webhook/receive-webhook.lambda:watch": {
+      "name": "bundle:lambda/receive-webhook/receive-webhook.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/receive-webhook/receive-webhook.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/receive-webhook/receive-webhook.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/receive-webhook/receive-webhook.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/record-outcome/record-outcome.lambda": {
+      "name": "bundle:lambda/record-outcome/record-outcome.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/record-outcome/record-outcome.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/record-outcome/record-outcome.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/record-outcome/record-outcome.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/record-outcome/record-outcome.lambda:watch": {
+      "name": "bundle:lambda/record-outcome/record-outcome.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/record-outcome/record-outcome.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/record-outcome/record-outcome.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/record-outcome/record-outcome.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/send-reply/send-reply.lambda": {
+      "name": "bundle:lambda/send-reply/send-reply.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/send-reply/send-reply.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/send-reply/send-reply.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/send-reply/send-reply.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/send-reply/send-reply.lambda:watch": {
+      "name": "bundle:lambda/send-reply/send-reply.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/send-reply/send-reply.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/send-reply/send-reply.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/send-reply/send-reply.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "clobber": {
+      "name": "clobber",
+      "description": "hard resets to HEAD of origin and cleans the local repo",
+      "env": {
+        "BRANCH": "$(git branch --show-current)"
+      },
+      "steps": [
+        {
+          "execArgs": [
+            "git",
+            "checkout",
+            "-b",
+            "scratch"
+          ],
+          "name": "save current HEAD in \"scratch\" branch"
+        },
+        {
+          "exec": "git checkout \"$BRANCH\""
+        },
+        {
+          "execArgs": [
+            "git",
+            "fetch",
+            "origin"
+          ],
+          "name": "fetch latest changes from origin"
+        },
+        {
+          "exec": "git reset --hard \"origin/$BRANCH\"",
+          "name": "hard reset to origin commit"
+        },
+        {
+          "execArgs": [
+            "git",
+            "clean",
+            "-fdx"
+          ],
+          "name": "clean all untracked files"
+        },
+        {
+          "say": "ready to rock! (unpushed commits are under the \"scratch\" branch)"
+        }
+      ],
+      "condition": "git diff --exit-code > /dev/null"
+    },
+    "compile": {
+      "name": "compile",
+      "description": "Only compile"
+    },
+    "default": {
+      "name": "default",
+      "description": "Synthesize project files",
+      "steps": [
+        {
+          "execArgs": [
+            "tsc",
+            "--noEmit",
+            "-p",
+            "projenrc/tsconfig.json"
+          ],
+          "name": "typecheck"
+        },
+        {
+          "execArgs": [
+            "tsx",
+            "--tsconfig",
+            "projenrc/tsconfig.json",
+            ".projenrc.ts"
+          ]
+        }
+      ]
+    },
+    "deploy": {
+      "name": "deploy",
+      "description": "Deploys your CDK app to the AWS cloud",
+      "steps": [
+        {
+          "execArgs": [
+            "cdk",
+            "deploy"
+          ],
+          "receiveArgs": true
+        }
+      ]
+    },
+    "destroy": {
+      "name": "destroy",
+      "description": "Destroys your cdk app in the AWS cloud",
+      "steps": [
+        {
+          "execArgs": [
+            "cdk",
+            "destroy"
+          ],
+          "receiveArgs": true
+        }
+      ]
+    },
+    "diff": {
+      "name": "diff",
+      "description": "Diffs the currently deployed app against your code",
+      "steps": [
+        {
+          "execArgs": [
+            "cdk",
+            "diff"
+          ]
+        }
+      ]
+    },
+    "eject": {
+      "name": "eject",
+      "description": "Remove projen from the project",
+      "env": {
+        "PROJEN_EJECTING": "true"
+      },
+      "steps": [
+        {
+          "spawn": "default"
+        }
+      ]
+    },
+    "eslint": {
+      "name": "eslint",
+      "description": "Runs eslint against the codebase",
+      "env": {
+        "ESLINT_USE_FLAT_CONFIG": "false",
+        "NODE_NO_WARNINGS": "1"
+      },
+      "steps": [
+        {
+          "execArgs": [
+            "eslint",
+            "--ext",
+            ".ts,.tsx",
+            "--fix",
+            "--no-error-on-unmatched-pattern",
+            "$@",
+            "src",
+            "test",
+            "build-tools",
+            "projenrc",
+            ".projenrc.ts"
+          ],
+          "receiveArgs": true
+        }
+      ]
+    },
+    "install": {
+      "name": "install",
+      "description": "Install project dependencies and update lockfile (non-frozen)",
+      "steps": [
+        {
+          "exec": "npm install"
+        }
+      ]
+    },
+    "install:ci": {
+      "name": "install:ci",
+      "description": "Install project dependencies using frozen lockfile",
+      "steps": [
+        {
+          "exec": "npm ci"
+        }
+      ]
+    },
+    "localstack:bootstrap": {
+      "name": "localstack:bootstrap",
+      "description": "Bootstraps CDK in LocalStack and grants the bootstrap roles admin (LocalStack enforces IAM)",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal bootstrap aws://000000000000/eu-west-1"
+        },
+        {
+          "exec": "aws iam attach-role-policy --endpoint-url http://localhost:4566 --role-name cdk-hnb659fds-deploy-role-000000000000-eu-west-1 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+        },
+        {
+          "exec": "aws iam attach-role-policy --endpoint-url http://localhost:4566 --role-name cdk-hnb659fds-file-publishing-role-000000000000-eu-west-1 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+        },
+        {
+          "exec": "aws iam attach-role-policy --endpoint-url http://localhost:4566 --role-name cdk-hnb659fds-image-publishing-role-000000000000-eu-west-1 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+        },
+        {
+          "exec": "aws iam attach-role-policy --endpoint-url http://localhost:4566 --role-name cdk-hnb659fds-lookup-role-000000000000-eu-west-1 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+        },
+        {
+          "exec": "aws iam attach-role-policy --endpoint-url http://localhost:4566 --role-name cdk-hnb659fds-cfn-exec-role-000000000000-eu-west-1 --policy-arn arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+      ]
+    },
+    "localstack:deploy": {
+      "name": "localstack:deploy",
+      "description": "Deploys every stack of the Local stage to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" \"Local/*\" --require-approval never"
+        }
+      ]
+    },
+    "localstack:deploy:common": {
+      "name": "localstack:deploy:common",
+      "description": "Deploys InstagramAutoReplyCommonStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyCommonStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:deploy:generate-reply": {
+      "name": "localstack:deploy:generate-reply",
+      "description": "Deploys InstagramAutoReplyGenerateReplyLambdaStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyGenerateReplyLambdaStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:deploy:get-context": {
+      "name": "localstack:deploy:get-context",
+      "description": "Deploys InstagramAutoReplyGetContextLambdaStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyGetContextLambdaStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:deploy:record-outcome": {
+      "name": "localstack:deploy:record-outcome",
+      "description": "Deploys InstagramAutoReplyRecordOutcomeLambdaStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyRecordOutcomeLambdaStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:deploy:send-reply": {
+      "name": "localstack:deploy:send-reply",
+      "description": "Deploys InstagramAutoReplySendReplyLambdaStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplySendReplyLambdaStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:deploy:step-functions": {
+      "name": "localstack:deploy:step-functions",
+      "description": "Deploys InstagramAutoReplyStepFunctionsStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyStepFunctionsStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:deploy:webhook": {
+      "name": "localstack:deploy:webhook",
+      "description": "Deploys InstagramAutoReplyWebhookStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyWebhookStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
+    "localstack:destroy": {
+      "name": "localstack:destroy",
+      "description": "Destroys every stack of the Local stage in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" \"Local/*\" --force"
+        }
+      ]
+    },
+    "localstack:destroy:common": {
+      "name": "localstack:destroy:common",
+      "description": "Destroys InstagramAutoReplyCommonStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyCommonStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:destroy:generate-reply": {
+      "name": "localstack:destroy:generate-reply",
+      "description": "Destroys InstagramAutoReplyGenerateReplyLambdaStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyGenerateReplyLambdaStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:destroy:get-context": {
+      "name": "localstack:destroy:get-context",
+      "description": "Destroys InstagramAutoReplyGetContextLambdaStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyGetContextLambdaStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:destroy:record-outcome": {
+      "name": "localstack:destroy:record-outcome",
+      "description": "Destroys InstagramAutoReplyRecordOutcomeLambdaStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyRecordOutcomeLambdaStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:destroy:send-reply": {
+      "name": "localstack:destroy:send-reply",
+      "description": "Destroys InstagramAutoReplySendReplyLambdaStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplySendReplyLambdaStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:destroy:step-functions": {
+      "name": "localstack:destroy:step-functions",
+      "description": "Destroys InstagramAutoReplyStepFunctionsStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyStepFunctionsStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:destroy:webhook": {
+      "name": "localstack:destroy:webhook",
+      "description": "Destroys InstagramAutoReplyWebhookStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyWebhookStack --exclusively --force"
+        }
+      ]
+    },
+    "localstack:diff": {
+      "name": "localstack:diff",
+      "description": "Diffs the Local stage against LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal diff -a \"npx tsx src/local/main.ts\" \"Local/*\""
+        }
+      ]
+    },
+    "localstack:down": {
+      "name": "localstack:down",
+      "description": "Stops the local environment and removes its volumes",
+      "steps": [
+        {
+          "exec": "docker compose -f dev/environment/docker-compose.yml down --volumes"
+        }
+      ]
+    },
+    "localstack:setup": {
+      "name": "localstack:setup",
+      "description": "Deploys the LocalStack stand-ins for external resources",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/set-up-main.ts\" --require-approval never"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/AppSecret --type SecureString --value local-app-secret --overwrite"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/VerifyToken --type SecureString --value local-verify-token --overwrite"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/AccessToken --type SecureString --value local-access-token --overwrite"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/UserId --type String --value 17840000000000000 --overwrite"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Anthropic/ApiKey --type SecureString --value local-anthropic-api-key --overwrite"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/MongoDb/Uri --type SecureString --value mongodb://mongodb:27017 --overwrite"
+        }
+      ]
+    },
+    "localstack:start": {
+      "name": "localstack:start",
+      "description": "Starts the local environment and deploys everything to it",
+      "steps": [
+        {
+          "spawn": "localstack:up"
+        },
+        {
+          "spawn": "localstack:bootstrap"
+        },
+        {
+          "spawn": "localstack:setup"
+        },
+        {
+          "spawn": "localstack:deploy"
+        }
+      ]
+    },
+    "localstack:up": {
+      "name": "localstack:up",
+      "description": "Starts LocalStack, MongoDB and Mockoon (needs LOCALSTACK_AUTH_TOKEN)",
+      "steps": [
+        {
+          "exec": "docker compose -f dev/environment/docker-compose.yml up -d --wait"
+        }
+      ]
+    },
+    "localstack:update:common": {
+      "name": "localstack:update:common",
+      "description": "Clean redeploy of InstagramAutoReplyCommonStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:common"
+        },
+        {
+          "spawn": "localstack:deploy:common"
+        }
+      ]
+    },
+    "localstack:update:generate-reply": {
+      "name": "localstack:update:generate-reply",
+      "description": "Clean redeploy of InstagramAutoReplyGenerateReplyLambdaStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:generate-reply"
+        },
+        {
+          "spawn": "localstack:deploy:generate-reply"
+        }
+      ]
+    },
+    "localstack:update:get-context": {
+      "name": "localstack:update:get-context",
+      "description": "Clean redeploy of InstagramAutoReplyGetContextLambdaStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:get-context"
+        },
+        {
+          "spawn": "localstack:deploy:get-context"
+        }
+      ]
+    },
+    "localstack:update:record-outcome": {
+      "name": "localstack:update:record-outcome",
+      "description": "Clean redeploy of InstagramAutoReplyRecordOutcomeLambdaStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:record-outcome"
+        },
+        {
+          "spawn": "localstack:deploy:record-outcome"
+        }
+      ]
+    },
+    "localstack:update:send-reply": {
+      "name": "localstack:update:send-reply",
+      "description": "Clean redeploy of InstagramAutoReplySendReplyLambdaStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:send-reply"
+        },
+        {
+          "spawn": "localstack:deploy:send-reply"
+        }
+      ]
+    },
+    "localstack:update:step-functions": {
+      "name": "localstack:update:step-functions",
+      "description": "Clean redeploy of InstagramAutoReplyStepFunctionsStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:step-functions"
+        },
+        {
+          "spawn": "localstack:deploy:step-functions"
+        }
+      ]
+    },
+    "localstack:update:webhook": {
+      "name": "localstack:update:webhook",
+      "description": "Clean redeploy of InstagramAutoReplyWebhookStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:webhook"
+        },
+        {
+          "spawn": "localstack:deploy:webhook"
+        }
+      ]
+    },
+    "package": {
+      "name": "package",
+      "description": "Creates the distribution package"
+    },
+    "post-compile": {
+      "name": "post-compile",
+      "description": "Runs after successful compilation",
+      "steps": [
+        {
+          "spawn": "synth:silent"
+        }
+      ]
+    },
+    "post-upgrade": {
+      "name": "post-upgrade",
+      "description": "Runs after upgrading dependencies"
+    },
+    "pre-compile": {
+      "name": "pre-compile",
+      "description": "Prepare the project for compilation"
+    },
+    "synth": {
+      "name": "synth",
+      "description": "Synthesizes your cdk app into cdk.out",
+      "steps": [
+        {
+          "execArgs": [
+            "cdk",
+            "synth"
+          ]
+        }
+      ]
+    },
+    "synth:silent": {
+      "name": "synth:silent",
+      "description": "Synthesizes your cdk app into cdk.out and suppresses the template in stdout (part of \"yarn build\")",
+      "steps": [
+        {
+          "execArgs": [
+            "cdk",
+            "synth",
+            "-q"
+          ]
+        }
+      ]
+    },
+    "test": {
+      "name": "test",
+      "description": "Run tests",
+      "steps": [
+        {
+          "execArgs": [
+            "jest",
+            "--passWithNoTests",
+            "--updateSnapshot"
+          ],
+          "receiveArgs": true
+        },
+        {
+          "spawn": "eslint"
+        }
+      ]
+    },
+    "test:localstack": {
+      "name": "test:localstack",
+      "description": "Runs the integration tests against the deployed LocalStack stage",
+      "steps": [
+        {
+          "exec": "jest --testPathIgnorePatterns=/node_modules/ --testMatch=\"**/test/localstack/**/*.test.ts\""
+        }
+      ]
+    },
+    "test:watch": {
+      "name": "test:watch",
+      "description": "Run jest in watch mode",
+      "steps": [
+        {
+          "execArgs": [
+            "jest",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "name": "upgrade",
+      "description": "upgrade dependencies",
+      "env": {
+        "CI": "0"
+      },
+      "steps": [
+        {
+          "execArgs": [
+            "npx",
+            "npm-check-updates@20",
+            "--upgrade",
+            "--target=minor",
+            "--peer",
+            "--no-deprecated",
+            "--dep=dev,prod,peer,optional",
+            "--filter=@types/jest,esbuild,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,prettier,ts-jest,ts-node,typescript"
+          ]
+        },
+        {
+          "exec": "npm install"
+        },
+        {
+          "execArgs": [
+            "npm",
+            "update",
+            "@aws-sdk/client-lambda",
+            "@types/aws-lambda",
+            "@types/jest",
+            "@types/node",
+            "@typescript-eslint/eslint-plugin",
+            "@typescript-eslint/parser",
+            "aws-cdk-local",
+            "aws-cdk",
+            "esbuild",
+            "eslint-config-prettier",
+            "eslint-import-resolver-typescript",
+            "eslint-plugin-awscdk",
+            "eslint-plugin-import",
+            "eslint-plugin-prettier",
+            "eslint",
+            "jest",
+            "jest-junit",
+            "prettier",
+            "projen",
+            "ts-jest",
+            "ts-node",
+            "tsx",
+            "typescript",
+            "@anthropic-ai/sdk",
+            "@aws-sdk/client-sfn",
+            "@aws-sdk/client-ssm",
+            "aws-cdk-lib",
+            "cdk-nag",
+            "constructs",
+            "mongodb",
+            "reflect-metadata",
+            "tsyringe",
+            "winston"
+          ]
+        },
+        {
+          "exec": "npx projen"
+        },
+        {
+          "spawn": "post-upgrade"
+        }
+      ]
+    },
+    "watch": {
+      "name": "watch",
+      "description": "Watches changes in your source code and rebuilds and deploys to the current account",
+      "steps": [
+        {
+          "execArgs": [
+            "cdk",
+            "deploy",
+            "--hotswap"
+          ]
+        },
+        {
+          "execArgs": [
+            "cdk",
+            "watch"
+          ]
+        }
+      ]
+    }
+  },
+  "//": "~~ Generated by projen. To modify, edit .projenrc.ts and run \"npx projen\"."
+}

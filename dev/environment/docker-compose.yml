@@ -1,0 +1,40 @@
+services:
+  localstack:
+    container_name: localstack
+    image: localstack/localstack-pro:2026.10.0
+    environment:
+      DEBUG: 1
+      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN:?Set LOCALSTACK_AUTH_TOKEN before starting the environment}
+      AWS_DEFAULT_REGION: eu-west-1
+      LAMBDA_IGNORE_ARCHITECTURE: 1
+      # Lambda containers join this network, so they reach mongodb/mockoon by container name.
+      LAMBDA_DOCKER_NETWORK: instagram-auto-reply
+      LOCALSTACK_APP_INSPECTOR: 1
+      ENFORCE_IAM: 1
+      SERVICES: sqs,lambda,s3,stepfunctions,cloudwatch,logs,cloudformation,ssm,secretsmanager,iam,sts,ecr,events
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 4566:4566
+
+  mongodb:
+    image: mongo:8.0.11
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - ./setup/mongodb:/db
+    restart: always
+
+  mockoon:
+    image: mockoon/cli:latest
+    container_name: mockoon
+    ports:
+      - 3001:3001
+    volumes:
+      - ./setup/mockoon:/data
+    command: -d data/test-api.json
+
+networks:
+  default:
+    name: instagram-auto-reply

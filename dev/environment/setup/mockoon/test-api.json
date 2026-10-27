@@ -1,0 +1,319 @@
+{
+  "uuid": "2bac1003-3287-4c29-86f0-d4d467175912",
+  "lastMigration": 33,
+  "name": "INSTAGRAM AUTO REPLY STUBS",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "517e53e8-6125-4802-9745-2fdf656cf683",
+      "type": "http",
+      "documentation": "Status",
+      "method": "get",
+      "endpoint": "status",
+      "responses": [
+        {
+          "uuid": "8f1e5169-446a-4913-9b64-466b56951949",
+          "body": "{\n  \"status\": \"Successful\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "67e42b10-a393-4f05-9ea6-03d73a618953",
+      "type": "http",
+      "documentation": "Instagram: conversation with a user",
+      "method": "get",
+      "endpoint": "instagram/me/conversations",
+      "responses": [
+        {
+          "uuid": "454482e7-c5df-4d69-a3fd-b1151f386719",
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"local-conversation-1\"\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "15beb72e-2576-4c23-8fa2-85e110f70542",
+      "type": "http",
+      "documentation": "Instagram: latest conversation messages, newest first",
+      "method": "get",
+      "endpoint": "instagram/local-conversation-1",
+      "responses": [
+        {
+          "uuid": "b35051b0-4bd5-4a52-b231-e2209e31e813",
+          "body": "{\n  \"id\": \"local-conversation-1\",\n  \"messages\": {\n    \"data\": [\n      {\n        \"id\": \"local-message-2\",\n        \"message\": \"Which book should I start with?\",\n        \"created_time\": \"2026-10-27T10:01:00+0000\",\n        \"from\": {\n          \"id\": \"local-sender-1\",\n          \"username\": \"local_follower\"\n        }\n      },\n      {\n        \"id\": \"local-message-1\",\n        \"message\": \"Thanks for the reply earlier\",\n        \"created_time\": \"2026-10-27T10:00:00+0000\",\n        \"from\": {\n          \"id\": \"17840000000000000\",\n          \"username\": \"themanualformen\"\n        }\n      }\n    ]\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "934422f7-78b8-4c75-a06f-4c70250b0f9a",
+      "type": "http",
+      "documentation": "Instagram: reply to a comment",
+      "method": "post",
+      "endpoint": "instagram/:commentId/replies",
+      "responses": [
+        {
+          "uuid": "0f6c9dd9-5be3-4217-8ef6-7d609e6ca1a5",
+          "body": "{\n  \"id\": \"local-comment-reply-1\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1ab8d4a0-76f3-4d27-851c-073a49506da1",
+      "type": "http",
+      "documentation": "Instagram: send a direct message",
+      "method": "post",
+      "endpoint": "instagram/:userId/messages",
+      "responses": [
+        {
+          "uuid": "29a7bf5f-b836-4f82-a759-ae324cc21193",
+          "body": "{\n  \"recipient_id\": \"local-sender-1\",\n  \"message_id\": \"local-sent-message-1\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "ccf1047e-cd94-4e7f-a836-e47baf72cef2",
+      "type": "http",
+      "documentation": "Instagram: a comment or media item",
+      "method": "get",
+      "endpoint": "instagram/:id",
+      "responses": [
+        {
+          "uuid": "2168f3c5-491f-4e95-a63d-46d9cc6988ec",
+          "body": "{\n  \"id\": \"local-object-1\",\n  \"text\": \"This is the comment being replied to\",\n  \"caption\": \"Discipline is choosing what you want most over what you want now.\",\n  \"from\": {\n    \"id\": \"local-sender-2\",\n    \"username\": \"local_commenter\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "ece3d400-df96-4e49-ac91-41f7e69faef9",
+      "type": "http",
+      "documentation": "Claude: Messages API (structured reply)",
+      "method": "post",
+      "endpoint": "anthropic/v1/messages",
+      "responses": [
+        {
+          "uuid": "3b5d1421-8cd6-4413-85ed-c44c6d8f4f76",
+          "body": "{\n  \"id\": \"msg_local_1\",\n  \"type\": \"message\",\n  \"role\": \"assistant\",\n  \"model\": \"claude-opus-5-5\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{\\\"decision\\\":\\\"reply\\\",\\\"replyText\\\":\\\"Glad it landed. Start with one page a day and build from there.\\\",\\\"reason\\\":\\\"Positive comment about the post; a short encouraging reply fits.\\\"}\"\n    }\n  ],\n  \"stop_reason\": \"end_turn\",\n  \"stop_sequence\": null,\n  \"usage\": {\n    \"input_tokens\": 600,\n    \"output_tokens\": 80\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "517e53e8-6125-4802-9745-2fdf656cf683"
+    },
+    {
+      "type": "route",
+      "uuid": "67e42b10-a393-4f05-9ea6-03d73a618953"
+    },
+    {
+      "type": "route",
+      "uuid": "15beb72e-2576-4c23-8fa2-85e110f70542"
+    },
+    {
+      "type": "route",
+      "uuid": "934422f7-78b8-4c75-a06f-4c70250b0f9a"
+    },
+    {
+      "type": "route",
+      "uuid": "1ab8d4a0-76f3-4d27-851c-073a49506da1"
+    },
+    {
+      "type": "route",
+      "uuid": "ccf1047e-cd94-4e7f-a836-e47baf72cef2"
+    },
+    {
+      "type": "route",
+      "uuid": "ece3d400-df96-4e49-ac91-41f7e69faef9"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": [
+    {
+      "uuid": "c8ac695d-2d1c-441a-9549-42421546d959",
+      "id": "wur9",
+      "uri": "",
+      "name": "Callback",
+      "documentation": "",
+      "method": "post",
+      "headers": [],
+      "bodyType": "INLINE",
+      "body": "",
+      "databucketID": "",
+      "filePath": "",
+      "sendFileAsBody": true
+    }
+  ]
+}

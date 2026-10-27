@@ -1,0 +1,194 @@
+{
+    "Comment": "Replies to one Instagram comment or direct message: get context, generate a reply with Claude, send it in auto mode, record the outcome",
+    "QueryLanguage": "JSONata",
+    "StartAt": "Get Context",
+    "States": {
+        "Get Context": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Arguments": {
+                "Payload": {
+                    "Input": "{% $states.input %}",
+                    "ExecutionId": "{% $states.context.Execution.Name %}"
+                },
+                "FunctionName": "${GetContextLambdaFunctionArn}"
+            },
+            "Output": "{% $states.result.Payload %}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ],
+                    "IntervalSeconds": 1,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 2,
+                    "JitterStrategy": "FULL"
+                },
+                {
+                    "ErrorEquals": ["INSTAGRAM_ERROR", "MONGODB_ERROR", "PARAMETER_STORE_ERROR"],
+                    "IntervalSeconds": 5,
+                    "MaxAttempts": 2,
+                    "BackoffRate": 3,
+                    "JitterStrategy": "FULL"
+                }
+            ],
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "Output": "{% $states.errorOutput %}",
+                    "Next": "Send To Failed Reply Queue"
+                }
+            ],
+            "Next": "Should Reply"
+        },
+        "Should Reply": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Condition": "{% $states.input.shouldReply %}",
+                    "Next": "Generate Reply"
+                }
+            ],
+            "Default": "Record Outcome"
+        },
+        "Generate Reply": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Arguments": {
+                "Payload": {
+                    "Input": "{% $states.input %}",
+                    "ExecutionId": "{% $states.context.Execution.Name %}"
+                },
+                "FunctionName": "${GenerateReplyLambdaFunctionArn}"
+            },
+            "Output": "{% $states.result.Payload %}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                    ],
+                    "IntervalSeconds": 1,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 2,
+                    "JitterStrategy": "FULL"
+                },
+                {
+                    "ErrorEquals": ["CLAUDE_ERROR", "PARAMETER_STORE_ERROR"],
+                    "IntervalSeconds": 10,
+                    "MaxAttempts": 2,
+                    "BackoffRate": 3,
+                    "JitterStrategy": "FULL"
+                }
+            ],
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "Output": "{% $states.errorOutput %}",
+                    "Next": "Send To Failed Reply Queue"
+                }
+            ],
+            "Next": "Should Send"
+        },
+        "Should Send": {
+            "Comment": "Only auto mode sends; in review mode an approved reply is stored as a draft",
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Condition": "{% $states.input.generatedReply.decision = 'reply' and $states.input.config.mode = 'auto' %}",
+                    "Next": "Send Reply"
+                }
+            ],
+            "Default": "Record Outcome"
+        },
+        "Send Reply": {
+            "Comment": "No retry on INSTAGRAM_ERROR: a reply that was posted but whose response was lost would be posted twice",
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Arguments": {
+                "Payload": {
+                    "Input": "{% $states.input %}",
+                    "ExecutionId": "{% $states.context.Execution.Name %}"
+                },
+                "FunctionName": "${SendReplyLambdaFunctionArn}"
+            },
+            "Output": "{% $states.result.Payload %}",
+            "Retry": [
+                {
+                    "ErrorEquals": ["Lambda.ServiceException", "Lambda.SdkClientException", "Lambda.TooManyRequestsException"],
+                    "IntervalSeconds": 1,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 2,
+                    "JitterStrategy": "FULL"
+                }
+            ],
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "Output": "{% $states.errorOutput %}",
+                    "Next": "Send To Failed Reply Queue"
+                }
+            ],
+            "Next": "Record Outcome"
+        },
+        "Record Outcome": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Arguments": {
+                "Payload": {
+                    "Input": "{% $states.input %}",
+                    "ExecutionId": "{% $states.context.Execution.Name %}"
+                },
+                "FunctionName": "${RecordOutcomeLambdaFunctionArn}"
+            },
+            "Output": "{% $states.result.Payload %}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException",
+                        "MONGODB_ERROR",
+                        "PARAMETER_STORE_ERROR"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 2,
+                    "JitterStrategy": "FULL"
+                }
+            ],
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "Output": "{% $states.errorOutput %}",
+                    "Next": "Send To Failed Reply Queue"
+                }
+            ],
+            "End": true
+        },
+        "Send To Failed Reply Queue": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sqs:sendMessage",
+            "Arguments": {
+                "QueueUrl": "${FailedReplyQueueUrl}",
+                "MessageBody": {
+                    "ExecutionId": "{% $states.context.Execution.Name %}",
+                    "Input": "{% $states.context.Execution.Input %}",
+                    "Error": "{% $states.input %}"
+                }
+            },
+            "Next": "Reply Failed"
+        },
+        "Reply Failed": {
+            "Type": "Fail",
+            "Error": "ReplyFailed",
+            "Cause": "A step failed; the execution input and error were sent to the FailedReplyQueue"
+        }
+    }
+}

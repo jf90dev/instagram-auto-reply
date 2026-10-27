@@ -1,0 +1,163 @@
+{
+  "name": "instagram-auto-reply",
+  "description": "Claude-written replies to @themanualformen Instagram comments and direct messages",
+  "scripts": {
+    "build": "projen build",
+    "bundle": "projen bundle",
+    "bundle:lambda/generate-reply/generate-reply.lambda": "projen bundle:lambda/generate-reply/generate-reply.lambda",
+    "bundle:lambda/generate-reply/generate-reply.lambda:watch": "projen bundle:lambda/generate-reply/generate-reply.lambda:watch",
+    "bundle:lambda/get-context/get-context.lambda": "projen bundle:lambda/get-context/get-context.lambda",
+    "bundle:lambda/get-context/get-context.lambda:watch": "projen bundle:lambda/get-context/get-context.lambda:watch",
+    "bundle:lambda/receive-webhook/receive-webhook.lambda": "projen bundle:lambda/receive-webhook/receive-webhook.lambda",
+    "bundle:lambda/receive-webhook/receive-webhook.lambda:watch": "projen bundle:lambda/receive-webhook/receive-webhook.lambda:watch",
+    "bundle:lambda/record-outcome/record-outcome.lambda": "projen bundle:lambda/record-outcome/record-outcome.lambda",
+    "bundle:lambda/record-outcome/record-outcome.lambda:watch": "projen bundle:lambda/record-outcome/record-outcome.lambda:watch",
+    "bundle:lambda/send-reply/send-reply.lambda": "projen bundle:lambda/send-reply/send-reply.lambda",
+    "bundle:lambda/send-reply/send-reply.lambda:watch": "projen bundle:lambda/send-reply/send-reply.lambda:watch",
+    "clobber": "projen clobber",
+    "compile": "projen compile",
+    "default": "projen default",
+    "deploy": "projen deploy",
+    "destroy": "projen destroy",
+    "diff": "projen diff",
+    "eject": "projen eject",
+    "eslint": "projen eslint",
+    "localstack:bootstrap": "projen localstack:bootstrap",
+    "localstack:deploy": "projen localstack:deploy",
+    "localstack:deploy:common": "projen localstack:deploy:common",
+    "localstack:deploy:generate-reply": "projen localstack:deploy:generate-reply",
+    "localstack:deploy:get-context": "projen localstack:deploy:get-context",
+    "localstack:deploy:record-outcome": "projen localstack:deploy:record-outcome",
+    "localstack:deploy:send-reply": "projen localstack:deploy:send-reply",
+    "localstack:deploy:step-functions": "projen localstack:deploy:step-functions",
+    "localstack:deploy:webhook": "projen localstack:deploy:webhook",
+    "localstack:destroy": "projen localstack:destroy",
+    "localstack:destroy:common": "projen localstack:destroy:common",
+    "localstack:destroy:generate-reply": "projen localstack:destroy:generate-reply",
+    "localstack:destroy:get-context": "projen localstack:destroy:get-context",
+    "localstack:destroy:record-outcome": "projen localstack:destroy:record-outcome",
+    "localstack:destroy:send-reply": "projen localstack:destroy:send-reply",
+    "localstack:destroy:step-functions": "projen localstack:destroy:step-functions",
+    "localstack:destroy:webhook": "projen localstack:destroy:webhook",
+    "localstack:diff": "projen localstack:diff",
+    "localstack:down": "projen localstack:down",
+    "localstack:setup": "projen localstack:setup",
+    "localstack:start": "projen localstack:start",
+    "localstack:up": "projen localstack:up",
+    "localstack:update:common": "projen localstack:update:common",
+    "localstack:update:generate-reply": "projen localstack:update:generate-reply",
+    "localstack:update:get-context": "projen localstack:update:get-context",
+    "localstack:update:record-outcome": "projen localstack:update:record-outcome",
+    "localstack:update:send-reply": "projen localstack:update:send-reply",
+    "localstack:update:step-functions": "projen localstack:update:step-functions",
+    "localstack:update:webhook": "projen localstack:update:webhook",
+    "package": "projen package",
+    "post-compile": "projen post-compile",
+    "post-upgrade": "projen post-upgrade",
+    "pre-compile": "projen pre-compile",
+    "synth": "projen synth",
+    "synth:silent": "projen synth:silent",
+    "test": "projen test",
+    "test:localstack": "projen test:localstack",
+    "test:watch": "projen test:watch",
+    "upgrade": "projen upgrade",
+    "watch": "projen watch",
+    "projen": "projen"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-lambda": "^3.1148.0",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "aws-cdk": "2.1145.0",
+    "aws-cdk-local": "^3.0.4",
+    "esbuild": "^0.28.2",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-awscdk": "^4.4.3",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.7",
+    "jest": "^30.5.2",
+    "jest-junit": "^17",
+    "prettier": "^3.9.10",
+    "projen": "0.104.5",
+    "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "@aws-sdk/client-sfn": "^3.1148.0",
+    "@aws-sdk/client-ssm": "^3.1157.0",
+    "aws-cdk-lib": "^2.273.0",
+    "cdk-nag": "^3.0.2",
+    "constructs": "^10.5.1",
+    "mongodb": "^7.7.0",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.10.0",
+    "winston": "^3.19.0"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "onFail": "ignore"
+    }
+  },
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "0.0.0",
+  "jest": {
+    "coverageProvider": "v8",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test/localstack/"
+    ],
+    "testMatch": [
+      "<rootDir>/@(src|test)/**/*(*.)@(spec|test).ts?(x)",
+      "<rootDir>/@(src|test)/**/__tests__/**/*.ts?(x)",
+      "<rootDir>/@(projenrc)/**/*(*.)@(spec|test).ts?(x)",
+      "<rootDir>/@(projenrc)/**/__tests__/**/*.ts?(x)"
+    ],
+    "clearMocks": true,
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "clover",
+      "cobertura",
+      "text"
+    ],
+    "coverageDirectory": "coverage",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test/localstack/"
+    ],
+    "watchPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "test-reports"
+        }
+      ]
+    ],
+    "transform": {
+      "^.+\\.[t]sx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "test/tsconfig.json"
+        }
+      ]
+    }
+  },
+  "//": "~~ Generated by projen. To modify, edit .projenrc.ts and run \"npx projen\"."
+}
