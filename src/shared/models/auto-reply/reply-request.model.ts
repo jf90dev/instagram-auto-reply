@@ -1,7 +1,7 @@
 import { ReplyChannel } from "./reply-channel.model";
 
 /**
- * One comment or direct message someone sent the account, as received by the webhook.
+ * One comment or direct message someone sent the account.
  * It is the input of a state machine execution.
  */
 export class ReplyRequest {

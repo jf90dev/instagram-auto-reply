@@ -23,7 +23,7 @@
 /projenrc/tsconfig.json linguist-generated linguist-language=JSON-with-Comments
 /src/lambda/generate-reply/generate-reply-function.ts linguist-generated
 /src/lambda/get-context/get-context-function.ts linguist-generated
-/src/lambda/receive-webhook/receive-webhook-function.ts linguist-generated
+/src/lambda/poll-comments/poll-comments-function.ts linguist-generated
 /src/lambda/record-outcome/record-outcome-function.ts linguist-generated
 /src/lambda/send-reply/send-reply-function.ts linguist-generated
 /test/tsconfig.json linguist-generated linguist-language=JSON-with-Comments

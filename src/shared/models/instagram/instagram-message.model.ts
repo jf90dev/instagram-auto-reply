@@ -1,4 +1,4 @@
-import { InstagramUserReference } from "./instagram-webhook-payload.model";
+import { InstagramUserReference } from "./instagram-user-reference.model";
 
 export class InstagramMessage {
     id: string;

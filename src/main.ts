@@ -1,4 +1,4 @@
-import { App, Validations } from "aws-cdk-lib";
+import { App, Duration, Validations } from "aws-cdk-lib";
 import { AwsSolutionsChecks } from "cdk-nag";
 
 import { AwsAccount } from "./constants/aws-account.constants";
@@ -39,7 +39,7 @@ new InstagramAutoReplyStage(app, "Prod", {
     instagram: { graphApiUrl: ExternalService.instagramGraphApiUrl },
     claude: { model: ExternalService.claudeModel },
     mongoDb: { databaseName: ExternalService.mongoDbDatabaseName },
-    receiveWebhook: { applicationLogLevel: "info" },
+    pollComments: { applicationLogLevel: "info", pollInterval: Duration.minutes(5) },
     getContext: { applicationLogLevel: "info" },
     generateReply: { applicationLogLevel: "info" },
     sendReply: { applicationLogLevel: "info" },

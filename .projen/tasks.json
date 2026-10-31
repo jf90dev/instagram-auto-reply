@@ -39,7 +39,7 @@
           "spawn": "bundle:lambda/get-context/get-context.lambda"
         },
         {
-          "spawn": "bundle:lambda/receive-webhook/receive-webhook.lambda"
+          "spawn": "bundle:lambda/poll-comments/poll-comments.lambda"
         },
         {
           "spawn": "bundle:lambda/record-outcome/record-outcome.lambda"
@@ -131,18 +131,18 @@
         }
       ]
     },
-    "bundle:lambda/receive-webhook/receive-webhook.lambda": {
-      "name": "bundle:lambda/receive-webhook/receive-webhook.lambda",
-      "description": "Create a JavaScript bundle from src/lambda/receive-webhook/receive-webhook.lambda.ts",
+    "bundle:lambda/poll-comments/poll-comments.lambda": {
+      "name": "bundle:lambda/poll-comments/poll-comments.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/poll-comments/poll-comments.lambda.ts",
       "steps": [
         {
           "execArgs": [
             "esbuild",
             "--bundle",
-            "src/lambda/receive-webhook/receive-webhook.lambda.ts",
+            "src/lambda/poll-comments/poll-comments.lambda.ts",
             "--target=node24",
             "--platform=node",
-            "--outfile=assets/lambda/receive-webhook/receive-webhook.lambda/index.js",
+            "--outfile=assets/lambda/poll-comments/poll-comments.lambda/index.js",
             "--packages=bundle",
             "--tsconfig=test/tsconfig.json",
             "--external:@aws-sdk/*",
@@ -151,18 +151,18 @@
         }
       ]
     },
-    "bundle:lambda/receive-webhook/receive-webhook.lambda:watch": {
-      "name": "bundle:lambda/receive-webhook/receive-webhook.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/lambda/receive-webhook/receive-webhook.lambda.ts",
+    "bundle:lambda/poll-comments/poll-comments.lambda:watch": {
+      "name": "bundle:lambda/poll-comments/poll-comments.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/poll-comments/poll-comments.lambda.ts",
       "steps": [
         {
           "execArgs": [
             "esbuild",
             "--bundle",
-            "src/lambda/receive-webhook/receive-webhook.lambda.ts",
+            "src/lambda/poll-comments/poll-comments.lambda.ts",
             "--target=node24",
             "--platform=node",
-            "--outfile=assets/lambda/receive-webhook/receive-webhook.lambda/index.js",
+            "--outfile=assets/lambda/poll-comments/poll-comments.lambda/index.js",
             "--packages=bundle",
             "--tsconfig=test/tsconfig.json",
             "--external:@aws-sdk/*",
@@ -505,6 +505,20 @@
         }
       ]
     },
+    "localstack:deploy:poll-comments": {
+      "name": "localstack:deploy:poll-comments",
+      "description": "Deploys InstagramAutoReplyPollCommentsLambdaStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyPollCommentsLambdaStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
     "localstack:deploy:record-outcome": {
       "name": "localstack:deploy:record-outcome",
       "description": "Deploys InstagramAutoReplyRecordOutcomeLambdaStack to LocalStack",
@@ -544,20 +558,6 @@
       "steps": [
         {
           "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyStepFunctionsStack --exclusively --require-approval never --method=direct"
-        }
-      ]
-    },
-    "localstack:deploy:webhook": {
-      "name": "localstack:deploy:webhook",
-      "description": "Deploys InstagramAutoReplyWebhookStack to LocalStack",
-      "env": {
-        "AWS_ACCESS_KEY_ID": "test",
-        "AWS_SECRET_ACCESS_KEY": "test",
-        "AWS_DEFAULT_REGION": "eu-west-1"
-      },
-      "steps": [
-        {
-          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyWebhookStack --exclusively --require-approval never --method=direct"
         }
       ]
     },
@@ -617,6 +617,20 @@
         }
       ]
     },
+    "localstack:destroy:poll-comments": {
+      "name": "localstack:destroy:poll-comments",
+      "description": "Destroys InstagramAutoReplyPollCommentsLambdaStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyPollCommentsLambdaStack --exclusively --force"
+        }
+      ]
+    },
     "localstack:destroy:record-outcome": {
       "name": "localstack:destroy:record-outcome",
       "description": "Destroys InstagramAutoReplyRecordOutcomeLambdaStack in LocalStack",
@@ -659,20 +673,6 @@
         }
       ]
     },
-    "localstack:destroy:webhook": {
-      "name": "localstack:destroy:webhook",
-      "description": "Destroys InstagramAutoReplyWebhookStack in LocalStack",
-      "env": {
-        "AWS_ACCESS_KEY_ID": "test",
-        "AWS_SECRET_ACCESS_KEY": "test",
-        "AWS_DEFAULT_REGION": "eu-west-1"
-      },
-      "steps": [
-        {
-          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyWebhookStack --exclusively --force"
-        }
-      ]
-    },
     "localstack:diff": {
       "name": "localstack:diff",
       "description": "Diffs the Local stage against LocalStack",
@@ -707,12 +707,6 @@
       "steps": [
         {
           "exec": "cdklocal deploy -a \"npx tsx src/local/set-up-main.ts\" --require-approval never"
-        },
-        {
-          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/AppSecret --type SecureString --value local-app-secret --overwrite"
-        },
-        {
-          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/VerifyToken --type SecureString --value local-verify-token --overwrite"
         },
         {
           "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/AccessToken --type SecureString --value local-access-token --overwrite"
@@ -791,6 +785,18 @@
         }
       ]
     },
+    "localstack:update:poll-comments": {
+      "name": "localstack:update:poll-comments",
+      "description": "Clean redeploy of InstagramAutoReplyPollCommentsLambdaStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:poll-comments"
+        },
+        {
+          "spawn": "localstack:deploy:poll-comments"
+        }
+      ]
+    },
     "localstack:update:record-outcome": {
       "name": "localstack:update:record-outcome",
       "description": "Clean redeploy of InstagramAutoReplyRecordOutcomeLambdaStack in LocalStack",
@@ -824,18 +830,6 @@
         },
         {
           "spawn": "localstack:deploy:step-functions"
-        }
-      ]
-    },
-    "localstack:update:webhook": {
-      "name": "localstack:update:webhook",
-      "description": "Clean redeploy of InstagramAutoReplyWebhookStack in LocalStack",
-      "steps": [
-        {
-          "spawn": "localstack:destroy:webhook"
-        },
-        {
-          "spawn": "localstack:deploy:webhook"
         }
       ]
     },

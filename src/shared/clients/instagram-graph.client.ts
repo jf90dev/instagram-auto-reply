@@ -2,8 +2,8 @@ import { inject, injectable } from "tsyringe";
 
 import { ParameterStoreClient } from "./parameter-store.client";
 import { InstagramError } from "../models/error-handling/instagram-error.model";
-import { InstagramComment } from "../models/instagram/instagram-comment.model";
-import { InstagramMedia } from "../models/instagram/instagram-media.model";
+import { InstagramComment, InstagramCommentList } from "../models/instagram/instagram-comment.model";
+import { InstagramMedia, InstagramMediaList } from "../models/instagram/instagram-media.model";
 import {
     InstagramConversation,
     InstagramConversationList,
@@ -33,6 +33,31 @@ export class InstagramGraphClient {
 
     async getMedia(mediaId: string): Promise<InstagramMedia> {
         return this.request<InstagramMedia>("GET", mediaId, { fields: "id,caption,permalink" });
+    }
+
+    /**
+     * The account's latest posts, newest first.
+     */
+    async getRecentMedia(mediaLimit: number): Promise<InstagramMedia[]> {
+        const accountUserId = await this.getAccountUserId();
+        const mediaList = await this.request<InstagramMediaList>("GET", `${accountUserId}/media`, {
+            fields: "id,caption,timestamp",
+            limit: `${mediaLimit}`
+        });
+
+        return mediaList.data;
+    }
+
+    /**
+     * The latest top-level comments on a post, each with its replies.
+     */
+    async getMediaComments(mediaId: string, commentLimit: number): Promise<InstagramComment[]> {
+        const commentList = await this.request<InstagramCommentList>("GET", `${mediaId}/comments`, {
+            fields: "id,text,timestamp,from,parent_id,replies{id,text,timestamp,from,parent_id}",
+            limit: `${commentLimit}`
+        });
+
+        return commentList.data;
     }
 
     /**

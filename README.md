@@ -1,12 +1,15 @@
 # instagram-auto-reply
 
-Claude-written replies to comments and direct messages on the @themanualformen Instagram account.
+Claude-written replies to comments on the @themanualformen Instagram account.
 AWS serverless application (CDK v2, TypeScript), managed by [projen](https://projen.io).
 
-Meta calls the **ReceiveWebhook** Lambda (a public function URL, `WebhookUrl` output of the Webhook
-stack). It checks the `X-Hub-Signature-256` signature, ignores the account's own comments and
-messages, and starts one state machine execution per comment or direct message. The execution
-name comes from the event id, so Meta's retries never reply twice. The state machine runs:
+Every 5 minutes an EventBridge rule runs the **PollComments** Lambda. It reads the latest 50
+comments (with their replies) on the account's 10 latest posts, ignores the account's own replies
+and anything older than 24 hours, and looks the rest up in the `themanualformen.received_comments`
+collection. Each comment it hasn't seen before starts one state machine execution and is then
+marked as received. The execution name comes from the comment id, so overlapping runs never reply
+twice. The limits are in `src/shared/constants/comment-polling.constant.ts`, the interval in
+`src/main.ts`. The state machine runs:
 
 1. **GetContext** – applies the hard rules (kill switch, channel switches, own account, daily
    limit per person, Instagram's 24 hour messaging window) and fetches the post caption and parent
@@ -46,8 +49,6 @@ CloudFormation can't create SecureString values):
 
 | Parameter | Type |
 |---|---|
-| `/Prod/InstagramAutoReply/Instagram/AppSecret` | SecureString |
-| `/Prod/InstagramAutoReply/Instagram/VerifyToken` | SecureString |
 | `/Prod/InstagramAutoReply/Instagram/AccessToken` | SecureString |
 | `/Prod/InstagramAutoReply/Instagram/UserId` | String |
 | `/Prod/InstagramAutoReply/Anthropic/ApiKey` | SecureString |

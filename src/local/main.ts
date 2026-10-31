@@ -1,4 +1,4 @@
-import { App, AspectPriority, Aspects, aws_lambda, Validations } from "aws-cdk-lib";
+import { App, AspectPriority, Aspects, aws_lambda, Duration, Validations } from "aws-cdk-lib";
 import { AwsSolutionsChecks } from "cdk-nag";
 
 import { LocalStackCompatibilityAspect } from "./localstack-compatibility.aspect";
@@ -30,7 +30,7 @@ const localStage = new InstagramAutoReplyStage(app, "Local", {
     instagram: { graphApiUrl: `${mockoonUrl}/instagram` },
     claude: { model: ExternalService.claudeModel, anthropicBaseUrl: `${mockoonUrl}/anthropic` },
     mongoDb: { databaseName: ExternalService.mongoDbDatabaseName },
-    receiveWebhook: {},
+    pollComments: { pollInterval: Duration.minutes(5) },
     getContext: {},
     generateReply: {},
     sendReply: {},

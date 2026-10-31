@@ -21,7 +21,7 @@ export class StepFunctionsClient {
 
     /**
      * Starts an execution with a name derived from its input, so starting the same work twice
-     * (for example when Meta retries a webhook) runs it once. Returns false if an execution with
+     * (for example when two polling runs overlap) runs it once. Returns false if an execution with
      * that name already finished (a still-running one is returned by Step Functions as a success).
      */
     async startExecutionOnce(stateMachineArn: string, executionName: string, input: unknown): Promise<boolean> {

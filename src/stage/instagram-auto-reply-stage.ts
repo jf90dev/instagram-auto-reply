@@ -1,4 +1,4 @@
-import { aws_lambda, Stage, StageProps } from "aws-cdk-lib";
+import { aws_lambda, Duration, Stage, StageProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
 import {
@@ -7,11 +7,10 @@ import {
 } from "../stacks/instagram-auto-reply-common-stack";
 import { InstagramAutoReplyGenerateReplyLambdaStack } from "../stacks/instagram-auto-reply-generate-reply-lambda-stack";
 import { InstagramAutoReplyGetContextLambdaStack } from "../stacks/instagram-auto-reply-get-context-lambda-stack";
+import { InstagramAutoReplyPollCommentsLambdaStack } from "../stacks/instagram-auto-reply-poll-comments-lambda-stack";
 import { InstagramAutoReplyRecordOutcomeLambdaStack } from "../stacks/instagram-auto-reply-record-outcome-lambda-stack";
 import { InstagramAutoReplySendReplyLambdaStack } from "../stacks/instagram-auto-reply-send-reply-lambda-stack";
 import { InstagramAutoReplyStepFunctionsStack } from "../stacks/instagram-auto-reply-step-functions-stack";
-import { InstagramAutoReplyWebhookStack } from "../stacks/instagram-auto-reply-webhook-stack";
-
 export interface InstagramAutoReplyStageProps extends StageProps {
     readonly common: InstagramAutoReplyCommonProps;
     readonly lambdaArchitecture?: aws_lambda.Architecture;
@@ -27,9 +26,9 @@ export interface InstagramAutoReplyStageProps extends StageProps {
     readonly mongoDb: {
         readonly databaseName: string;
     };
-    readonly receiveWebhook: {
+    readonly pollComments: {
         readonly applicationLogLevel?: string;
-        readonly reservedConcurrentExecutions?: number;
+        readonly pollInterval: Duration;
     };
     readonly getContext: {
         readonly applicationLogLevel?: string;
@@ -122,9 +121,12 @@ export class InstagramAutoReplyStage extends Stage {
             }
         );
 
-        new InstagramAutoReplyWebhookStack(this, "InstagramAutoReplyWebhookStack", {
+        new InstagramAutoReplyPollCommentsLambdaStack(this, "InstagramAutoReplyPollCommentsLambdaStack", {
             ...lambdaStackProperties,
-            ...props.receiveWebhook,
+            applicationLogLevel: props.pollComments.applicationLogLevel,
+            pollInterval: props.pollComments.pollInterval,
+            instagramGraphApiUrl: props.instagram.graphApiUrl,
+            mongoDbDatabaseName: props.mongoDb.databaseName,
             stateMachine: stepFunctionsStack.stateMachine
         });
     }
