@@ -39,7 +39,7 @@ new InstagramAutoReplyStage(app, "Prod", {
     instagram: { graphApiUrl: ExternalService.instagramGraphApiUrl },
     claude: { model: ExternalService.claudeModel },
     mongoDb: { databaseName: ExternalService.mongoDbDatabaseName },
-    pollComments: { applicationLogLevel: "info", pollInterval: Duration.minutes(5) },
+    pollComments: { applicationLogLevel: "info", pollInterval: Duration.minutes(30) },
     getContext: { applicationLogLevel: "info" },
     generateReply: { applicationLogLevel: "info" },
     sendReply: { applicationLogLevel: "info" },
