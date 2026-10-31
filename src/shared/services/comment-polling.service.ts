@@ -35,7 +35,7 @@ export class CommentPollingService {
             );
 
             // for (const newComment of newComments) {
-            //     await this.startReply(newComment);                
+            //     await this.startReply(newComment);
             // }
 
             this.logger.info(
