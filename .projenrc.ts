@@ -223,34 +223,34 @@ project.addTask("test:localstack", {
 // removed stack still imports from can't go yet, so failures only warn) and after it (where every
 // removed stack must go). It assumes the CDK bootstrap deploy role, as `cdk deploy` does, and
 // deletes through CloudFormation, which uses the stack's own execution role.
-const pruneRemovedStacksScript = (failOnError: boolean): string =>
-    [
-        "set -euo pipefail",
-        `stage="${GitHub.deployEnvironment}"`,
-        'stack_prefix="${stage}-InstagramAutoReply"',
-        "account=$(aws sts get-caller-identity --query Account --output text)",
-        'deploy_role="arn:aws:iam::${account}:role/cdk-hnb659fds-deploy-role-${account}-${AWS_REGION}"',
-        'credentials=$(aws sts assume-role --role-arn "$deploy_role" --role-session-name prune-removed-stacks --query Credentials --output json)',
-        'export AWS_ACCESS_KEY_ID=$(jq -r .AccessKeyId <<<"$credentials")',
-        'export AWS_SECRET_ACCESS_KEY=$(jq -r .SecretAccessKey <<<"$credentials")',
-        'export AWS_SESSION_TOKEN=$(jq -r .SessionToken <<<"$credentials")',
-        'expected=$(jq -r \'.artifacts[] | select(.type == "aws:cloudformation:stack") | .properties.stackName\' "cdk.out/assembly-${stage}/manifest.json")',
-        // Never prune against an empty or missing synth: that would delete every stack.
-        '[ -n "$expected" ] || { echo "::error::The synthesized ${stage} stage has no stacks"; exit 1; }',
-        'deployed=$(aws cloudformation describe-stacks --query "Stacks[?starts_with(StackName, \'${stack_prefix}\')].StackName" --output text | tr "\\t" "\\n")',
-        "failed=0",
-        "for stack in $deployed; do",
-        '  if grep -qx "$stack" <<<"$expected"; then continue; fi',
-        '  echo "Deleting $stack: no longer part of the ${stage} stage"',
-        '  if aws cloudformation delete-stack --stack-name "$stack" && aws cloudformation wait stack-delete-complete --stack-name "$stack"; then',
-        '    echo "Deleted $stack"',
-        "  else",
-        `    echo "::${failOnError ? "error" : "warning"}::Could not delete $stack yet"`,
-        "    failed=1",
-        "  fi",
-        "done",
-        failOnError ? 'exit "$failed"' : "exit 0"
-    ].join("\n");
+// const pruneRemovedStacksScript = (failOnError: boolean): string =>
+//     [
+//         "set -euo pipefail",
+//         `stage="${GitHub.deployEnvironment}"`,
+//         'stack_prefix="${stage}-InstagramAutoReply"',
+//         "account=$(aws sts get-caller-identity --query Account --output text)",
+//         'deploy_role="arn:aws:iam::${account}:role/cdk-hnb659fds-deploy-role-${account}-${AWS_REGION}"',
+//         'credentials=$(aws sts assume-role --role-arn "$deploy_role" --role-session-name prune-removed-stacks --query Credentials --output json)',
+//         'export AWS_ACCESS_KEY_ID=$(jq -r .AccessKeyId <<<"$credentials")',
+//         'export AWS_SECRET_ACCESS_KEY=$(jq -r .SecretAccessKey <<<"$credentials")',
+//         'export AWS_SESSION_TOKEN=$(jq -r .SessionToken <<<"$credentials")',
+//         'expected=$(jq -r \'.artifacts[] | select(.type == "aws:cloudformation:stack") | .properties.stackName\' "cdk.out/assembly-${stage}/manifest.json")',
+//         // Never prune against an empty or missing synth: that would delete every stack.
+//         '[ -n "$expected" ] || { echo "::error::The synthesized ${stage} stage has no stacks"; exit 1; }',
+//         'deployed=$(aws cloudformation describe-stacks --query "Stacks[?starts_with(StackName, \'${stack_prefix}\')].StackName" --output text | tr "\\t" "\\n")',
+//         "failed=0",
+//         "for stack in $deployed; do",
+//         '  if grep -qx "$stack" <<<"$expected"; then continue; fi',
+//         '  echo "Deleting $stack: no longer part of the ${stage} stage"',
+//         '  if aws cloudformation delete-stack --stack-name "$stack" && aws cloudformation wait stack-delete-complete --stack-name "$stack"; then',
+//         '    echo "Deleted $stack"',
+//         "  else",
+//         `    echo "::${failOnError ? "error" : "warning"}::Could not delete $stack yet"`,
+//         "    failed=1",
+//         "  fi",
+//         "done",
+//         failOnError ? 'exit "$failed"' : "exit 0"
+//     ].join("\n");
 
 const deployWorkflow = project.github!.addWorkflow("deploy");
 deployWorkflow.on({ push: { branches: ["main"] }, workflowDispatch: {} });
@@ -275,14 +275,14 @@ deployWorkflow.addJobs({
                     "role-session-name": `${projectName}-deploy`
                 }
             },
-            { name: "Delete removed stacks (before deploy)", run: pruneRemovedStacksScript(false) },
+            // { name: "Delete removed stacks (before deploy)", run: pruneRemovedStacksScript(false) },
             {
                 // Change sets: CloudFormation compares each template with the deployed stack and
                 // deletes resources that were removed from it.
                 name: "Deploy",
                 run: `npx cdk deploy --app cdk.out "${GitHub.deployEnvironment}/*" --method=change-set --require-approval never --concurrency 3`
-            },
-            { name: "Delete removed stacks (after deploy)", run: pruneRemovedStacksScript(true) }
+            }
+            // { name: "Delete removed stacks (after deploy)", run: pruneRemovedStacksScript(true) }
         ]
     }
 });
