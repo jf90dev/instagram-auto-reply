@@ -6,7 +6,7 @@ import { AutoReplyConfig } from "../models/auto-reply/auto-reply-config.model";
  */
 export const DEFAULT_AUTO_REPLY_CONFIG: AutoReplyConfig = {
     isEnabled: true,
-    mode: "review",
+    mode: "auto",
     replyToComments: true,
     replyToMessages: true,
     maxRepliesPerUserPerDay: 3,
