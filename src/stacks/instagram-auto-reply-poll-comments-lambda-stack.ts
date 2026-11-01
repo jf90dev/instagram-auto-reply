@@ -63,13 +63,13 @@ export class InstagramAutoReplyPollCommentsLambdaStack extends Stack {
 
         props.stateMachine.grantStartExecution(pollCommentsFunction);
 
-        new aws_events.Rule(this, "PollCommentsScheduleRule", {
-            ruleName: `${resourcePrefix}-PollCommentsSchedule`,
-            description: "Checks the latest Instagram posts for new comments",
-            schedule: aws_events.Schedule.rate(props.pollInterval),
-            // A failed run isn't retried: the next scheduled run picks up the same comments.
-            targets: [new aws_events_targets.LambdaFunction(pollCommentsFunction, { retryAttempts: 0 })]
-        });
+        // new aws_events.Rule(this, "PollCommentsScheduleRule", {
+        //     ruleName: `${resourcePrefix}-PollCommentsSchedule`,
+        //     description: "Checks the latest Instagram posts for new comments",
+        //     schedule: aws_events.Schedule.rate(props.pollInterval),
+        //     // A failed run isn't retried: the next scheduled run picks up the same comments.
+        //     targets: [new aws_events_targets.LambdaFunction(pollCommentsFunction, { retryAttempts: 0 })]
+        // });
 
         LambdaHelper.acknowledgeManagedPolicies(pollCommentsFunction);
 
