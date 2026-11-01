@@ -1,4 +1,5 @@
 import { CommentPollHelper } from "../../src/shared/helpers/comment-poll.helper";
+import { ExecutionNameHelper } from "../../src/shared/helpers/execution-name.helper";
 import { InstagramComment } from "../../src/shared/models/instagram/instagram-comment.model";
 
 const accountId = "17840000000000000";
@@ -87,9 +88,9 @@ describe("CommentPollHelper", () => {
             receivedAt: "2026-10-31T09:00:00.000Z"
         };
 
-        const executionName = CommentPollHelper.toExecutionName(request);
+        const executionName = ExecutionNameHelper.forReplyRequest(request);
 
-        expect(executionName).toBe(CommentPollHelper.toExecutionName({ ...request }));
+        expect(executionName).toBe(ExecutionNameHelper.forReplyRequest({ ...request }));
         expect(executionName).toMatch(/^comment-[0-9a-f]{40}$/);
     });
 });

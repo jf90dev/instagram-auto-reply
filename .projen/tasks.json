@@ -42,6 +42,9 @@
           "spawn": "bundle:lambda/poll-comments/poll-comments.lambda"
         },
         {
+          "spawn": "bundle:lambda/receive-webhook/receive-webhook.lambda"
+        },
+        {
           "spawn": "bundle:lambda/record-outcome/record-outcome.lambda"
         },
         {
@@ -163,6 +166,47 @@
             "--target=node24",
             "--platform=node",
             "--outfile=assets/lambda/poll-comments/poll-comments.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap",
+            "--watch"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/receive-webhook/receive-webhook.lambda": {
+      "name": "bundle:lambda/receive-webhook/receive-webhook.lambda",
+      "description": "Create a JavaScript bundle from src/lambda/receive-webhook/receive-webhook.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/receive-webhook/receive-webhook.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/receive-webhook/receive-webhook.lambda/index.js",
+            "--packages=bundle",
+            "--tsconfig=test/tsconfig.json",
+            "--external:@aws-sdk/*",
+            "--sourcemap"
+          ]
+        }
+      ]
+    },
+    "bundle:lambda/receive-webhook/receive-webhook.lambda:watch": {
+      "name": "bundle:lambda/receive-webhook/receive-webhook.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/lambda/receive-webhook/receive-webhook.lambda.ts",
+      "steps": [
+        {
+          "execArgs": [
+            "esbuild",
+            "--bundle",
+            "src/lambda/receive-webhook/receive-webhook.lambda.ts",
+            "--target=node24",
+            "--platform=node",
+            "--outfile=assets/lambda/receive-webhook/receive-webhook.lambda/index.js",
             "--packages=bundle",
             "--tsconfig=test/tsconfig.json",
             "--external:@aws-sdk/*",
@@ -561,6 +605,20 @@
         }
       ]
     },
+    "localstack:deploy:webhook": {
+      "name": "localstack:deploy:webhook",
+      "description": "Deploys InstagramAutoReplyWebhookStack to LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal deploy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyWebhookStack --exclusively --require-approval never --method=direct"
+        }
+      ]
+    },
     "localstack:destroy": {
       "name": "localstack:destroy",
       "description": "Destroys every stack of the Local stage in LocalStack",
@@ -673,6 +731,20 @@
         }
       ]
     },
+    "localstack:destroy:webhook": {
+      "name": "localstack:destroy:webhook",
+      "description": "Destroys InstagramAutoReplyWebhookStack in LocalStack",
+      "env": {
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "eu-west-1"
+      },
+      "steps": [
+        {
+          "exec": "cdklocal destroy -a \"npx tsx src/local/main.ts\" Local/InstagramAutoReplyWebhookStack --exclusively --force"
+        }
+      ]
+    },
     "localstack:diff": {
       "name": "localstack:diff",
       "description": "Diffs the Local stage against LocalStack",
@@ -707,6 +779,12 @@
       "steps": [
         {
           "exec": "cdklocal deploy -a \"npx tsx src/local/set-up-main.ts\" --require-approval never"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/AppSecret --type SecureString --value local-app-secret --overwrite"
+        },
+        {
+          "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/VerifyToken --type SecureString --value local-verify-token --overwrite"
         },
         {
           "exec": "aws ssm put-parameter --endpoint-url http://localhost:4566 --name /Local/InstagramAutoReply/Instagram/AccessToken --type SecureString --value local-access-token --overwrite"
@@ -830,6 +908,18 @@
         },
         {
           "spawn": "localstack:deploy:step-functions"
+        }
+      ]
+    },
+    "localstack:update:webhook": {
+      "name": "localstack:update:webhook",
+      "description": "Clean redeploy of InstagramAutoReplyWebhookStack in LocalStack",
+      "steps": [
+        {
+          "spawn": "localstack:destroy:webhook"
+        },
+        {
+          "spawn": "localstack:deploy:webhook"
         }
       ]
     },

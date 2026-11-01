@@ -5,6 +5,7 @@ import { InstagramGraphClient } from "../clients/instagram-graph.client";
 import { StepFunctionsClient } from "../clients/step-functions.client";
 import { COMMENT_LOOKBACK_HOURS, COMMENTS_PER_POST, POSTS_TO_CHECK } from "../constants/comment-polling.constant";
 import { CommentPollHelper } from "../helpers/comment-poll.helper";
+import { ExecutionNameHelper } from "../helpers/execution-name.helper";
 import { CommentPollResult } from "../models/auto-reply/comment-poll-result.model";
 import { ReplyRequest } from "../models/auto-reply/reply-request.model";
 import { ReceivedCommentRepository } from "../repositories/received-comment.repository";
@@ -57,7 +58,7 @@ export class CommentPollingService {
         const accountUserId = await this.instagramGraphClient.getAccountUserId();
         const since = new Date(Date.now() - COMMENT_LOOKBACK_HOURS * 60 * 60 * 1000);
         const recentPosts = await this.instagramGraphClient.getRecentMedia(POSTS_TO_CHECK);
-        const replyRequests: ReplyRequest[] = [];
+        const replyRequestList: ReplyRequest[] = [];
 
         for (const post of recentPosts) {
             const comments = await this.instagramGraphClient.getMediaComments(post.id, COMMENTS_PER_POST);
@@ -66,10 +67,16 @@ export class CommentPollingService {
                     `Found comment ${comment.id} on post ${post.id} by ${comment.from}: "${comment.text}"`
                 );
             }
-            replyRequests.push(...CommentPollHelper.toReplyRequests(post.id, comments, accountUserId, since));
+            const replyRequests: ReplyRequest[] = CommentPollHelper.toReplyRequests(
+                post.id,
+                comments,
+                accountUserId,
+                since
+            );
+            replyRequestList.push(...replyRequests);
         }
 
-        return { postsChecked: recentPosts.length, replyRequests: replyRequests };
+        return { postsChecked: recentPosts.length, replyRequests: replyRequestList };
     }
 
     /**
@@ -77,7 +84,7 @@ export class CommentPollingService {
      * passes the comment on again and Step Functions refuses the duplicate execution name.
      */
     private async startReply(request: ReplyRequest): Promise<void> {
-        const executionName = CommentPollHelper.toExecutionName(request);
+        const executionName = ExecutionNameHelper.forReplyRequest(request);
         const isStarted = await this.stepFunctionsClient.startExecutionOnce(
             this.stateMachineArn,
             executionName,

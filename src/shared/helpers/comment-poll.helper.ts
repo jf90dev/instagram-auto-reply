@@ -1,5 +1,3 @@
-import { createHash } from "crypto";
-
 import { ReplyRequest } from "../models/auto-reply/reply-request.model";
 import { InstagramComment } from "../models/instagram/instagram-comment.model";
 
@@ -30,15 +28,6 @@ export class CommentPollHelper {
                 mediaId: mediaId,
                 parentCommentId: comment.parent_id
             }));
-    }
-
-    /**
-     * A Step Functions execution name (at most 80 characters of [A-Za-z0-9-_]) that is the same
-     * every time the same comment is passed on.
-     */
-    static toExecutionName(request: ReplyRequest): string {
-        const eventHash = createHash("sha256").update(request.eventId).digest("hex").slice(0, 40);
-        return `${request.channel}-${eventHash}`;
     }
 
     private static isReplyCandidate(comment: InstagramComment, accountUserId: string, since: Date): boolean {

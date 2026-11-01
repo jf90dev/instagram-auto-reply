@@ -66,6 +66,7 @@
           "src/lambda/generate-reply/generate-reply.lambda.ts",
           "src/lambda/get-context/get-context.lambda.ts",
           "src/lambda/poll-comments/poll-comments.lambda.ts",
+          "src/lambda/receive-webhook/receive-webhook.lambda.ts",
           "src/lambda/record-outcome/record-outcome.lambda.ts",
           "src/lambda/send-reply/send-reply.lambda.ts",
           ".projenrc.ts",

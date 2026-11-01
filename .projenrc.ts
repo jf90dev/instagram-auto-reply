@@ -139,6 +139,8 @@ const setupLocal = project.addTask("localstack:setup", {
 // CloudFormation can't create SecureString parameters, so the stand-ins are created with the AWS CLI.
 // Placeholder values only: the Instagram and Anthropic APIs are stubbed by Mockoon.
 const localParameters: { [name: string]: { type: string; value: string } } = {
+    "Instagram/AppSecret": { type: "SecureString", value: "local-app-secret" },
+    "Instagram/VerifyToken": { type: "SecureString", value: "local-verify-token" },
     "Instagram/AccessToken": { type: "SecureString", value: "local-access-token" },
     "Instagram/UserId": { type: "String", value: "17840000000000000" },
     "Anthropic/ApiKey": { type: "SecureString", value: "local-anthropic-api-key" },
@@ -184,7 +186,8 @@ const components: { [component: string]: string } = {
     "send-reply": "InstagramAutoReplySendReplyLambdaStack",
     "record-outcome": "InstagramAutoReplyRecordOutcomeLambdaStack",
     "step-functions": "InstagramAutoReplyStepFunctionsStack",
-    "poll-comments": "InstagramAutoReplyPollCommentsLambdaStack"
+    "poll-comments": "InstagramAutoReplyPollCommentsLambdaStack",
+    webhook: "InstagramAutoReplyWebhookStack"
 };
 for (const [component, stackId] of Object.entries(components)) {
     const deployComponent = project.addTask(`localstack:deploy:${component}`, {

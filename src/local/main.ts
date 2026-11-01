@@ -30,6 +30,7 @@ const localStage = new InstagramAutoReplyStage(app, "Local", {
     instagram: { graphApiUrl: `${mockoonUrl}/instagram` },
     claude: { model: ExternalService.claudeModel, anthropicBaseUrl: `${mockoonUrl}/anthropic` },
     mongoDb: { databaseName: ExternalService.mongoDbDatabaseName },
+    receiveWebhook: {},
     pollComments: { pollInterval: Duration.minutes(5) },
     getContext: {},
     generateReply: {},

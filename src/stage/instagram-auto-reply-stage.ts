@@ -11,6 +11,7 @@ import { InstagramAutoReplyPollCommentsLambdaStack } from "../stacks/instagram-a
 import { InstagramAutoReplyRecordOutcomeLambdaStack } from "../stacks/instagram-auto-reply-record-outcome-lambda-stack";
 import { InstagramAutoReplySendReplyLambdaStack } from "../stacks/instagram-auto-reply-send-reply-lambda-stack";
 import { InstagramAutoReplyStepFunctionsStack } from "../stacks/instagram-auto-reply-step-functions-stack";
+import { InstagramAutoReplyWebhookStack } from "../stacks/instagram-auto-reply-webhook-stack";
 export interface InstagramAutoReplyStageProps extends StageProps {
     readonly common: InstagramAutoReplyCommonProps;
     readonly lambdaArchitecture?: aws_lambda.Architecture;
@@ -25,6 +26,10 @@ export interface InstagramAutoReplyStageProps extends StageProps {
     };
     readonly mongoDb: {
         readonly databaseName: string;
+    };
+    readonly receiveWebhook: {
+        readonly applicationLogLevel?: string;
+        readonly reservedConcurrentExecutions?: number;
     };
     readonly pollComments: {
         readonly applicationLogLevel?: string;
@@ -126,6 +131,13 @@ export class InstagramAutoReplyStage extends Stage {
             applicationLogLevel: props.pollComments.applicationLogLevel,
             pollInterval: props.pollComments.pollInterval,
             instagramGraphApiUrl: props.instagram.graphApiUrl,
+            mongoDbDatabaseName: props.mongoDb.databaseName,
+            stateMachine: stepFunctionsStack.stateMachine
+        });
+
+        new InstagramAutoReplyWebhookStack(this, "InstagramAutoReplyWebhookStack", {
+            ...lambdaStackProperties,
+            ...props.receiveWebhook,
             mongoDbDatabaseName: props.mongoDb.databaseName,
             stateMachine: stepFunctionsStack.stateMachine
         });

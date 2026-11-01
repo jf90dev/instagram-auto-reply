@@ -20,6 +20,7 @@ describe("InstagramAutoReplyStage", () => {
         instagram: { graphApiUrl: "https://graph.instagram.com/v24.0" },
         claude: { model: "claude-opus-5-5" },
         mongoDb: { databaseName: "themanualformen" },
+        receiveWebhook: {},
         pollComments: { pollInterval: Duration.minutes(5) },
         getContext: {},
         generateReply: {},
@@ -34,7 +35,8 @@ describe("InstagramAutoReplyStage", () => {
         ["InstagramAutoReplyGenerateReplyLambdaStack", "GenerateReply"],
         ["InstagramAutoReplySendReplyLambdaStack", "SendReply"],
         ["InstagramAutoReplyRecordOutcomeLambdaStack", "RecordOutcome"],
-        ["InstagramAutoReplyPollCommentsLambdaStack", "PollComments"]
+        ["InstagramAutoReplyPollCommentsLambdaStack", "PollComments"],
+        ["InstagramAutoReplyWebhookStack", "ReceiveWebhook"]
     ])("%s: the %s Lambda defaults to ARM_64 with the project runtime", (stackId, component) => {
         templateFor(stackId).hasResourceProperties("AWS::Lambda::Function", {
             FunctionName: `Test-InstagramAutoReply-${component}`,
@@ -80,6 +82,18 @@ describe("InstagramAutoReplyStage", () => {
             }
         });
         template.resourceCountIs("AWS::Lambda::Url", 0);
+    });
+
+    test("The webhook is a public function URL that can start the state machine", () => {
+        const template = templateFor("InstagramAutoReplyWebhookStack");
+
+        template.hasResourceProperties("AWS::Lambda::Url", { AuthType: "NONE" });
+        template.hasResourceProperties("AWS::IAM::Policy", {
+            PolicyDocument: {
+                Statement: Match.arrayWith([Match.objectLike({ Action: "states:StartExecution" })])
+            }
+        });
+        template.hasOutput("WebhookUrl", {});
     });
 
     test("State machine logs to the shared log group", () => {

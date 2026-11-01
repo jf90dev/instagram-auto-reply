@@ -1,15 +1,23 @@
 # instagram-auto-reply
 
-Claude-written replies to comments on the @themanualformen Instagram account.
+Claude-written replies to comments and direct messages on the @themanualformen Instagram account.
 AWS serverless application (CDK v2, TypeScript), managed by [projen](https://projen.io).
 
-Every 5 minutes an EventBridge rule runs the **PollComments** Lambda. It reads the latest 50
-comments (with their replies) on the account's 10 latest posts, ignores the account's own replies
-and anything older than 24 hours, and looks the rest up in the `themanualformen.received_comments`
-collection. Each comment it hasn't seen before starts one state machine execution and is then
-marked as received. The execution name comes from the comment id, so overlapping runs never reply
-twice. The limits are in `src/shared/constants/comment-polling.constant.ts`, the interval in
-`src/main.ts`. The state machine runs:
+Two Lambdas pass comments and messages to the state machine:
+
+- **ReceiveWebhook** – Meta calls it (a public function URL, `WebhookUrl` output of the Webhook
+  stack) for every new comment and direct message. It checks the `X-Hub-Signature-256` signature,
+  ignores the account's own comments and messages, starts one execution per comment or message, and
+  marks comments as received.
+- **PollComments** – an EventBridge rule runs it on a schedule (interval in `src/main.ts`) as a
+  safety net for missed webhook deliveries. It reads the latest 50 comments (with their replies) on
+  the account's 10 latest posts, ignores the account's own replies and anything older than 24
+  hours, and starts an execution for each comment not yet in the
+  `themanualformen.received_comments` collection. The limits are in
+  `src/shared/constants/comment-polling.constant.ts`.
+
+Both name the execution from the comment or message id, so a comment the webhook and the poller
+both see, or that Meta delivers twice, is replied to once. The state machine runs:
 
 1. **GetContext** – applies the hard rules (kill switch, channel switches, own account, daily
    limit per person, Instagram's 24 hour messaging window) and fetches the post caption and parent
@@ -49,6 +57,8 @@ CloudFormation can't create SecureString values):
 
 | Parameter | Type |
 |---|---|
+| `/Prod/InstagramAutoReply/Instagram/AppSecret` | SecureString |
+| `/Prod/InstagramAutoReply/Instagram/VerifyToken` | SecureString |
 | `/Prod/InstagramAutoReply/Instagram/AccessToken` | SecureString |
 | `/Prod/InstagramAutoReply/Instagram/UserId` | String |
 | `/Prod/InstagramAutoReply/Anthropic/ApiKey` | SecureString |
