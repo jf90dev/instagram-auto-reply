@@ -34,9 +34,9 @@ export class CommentPollingService {
                 newCommentIds.includes(request.commentId!)
             );
 
-            // for (const newComment of newComments) {
-            //     await this.startReply(newComment);
-            // }
+            for (const newComment of newComments) {
+                await this.startReply(newComment);
+            }
 
             this.logger.info(
                 `Checked ${recentComments.postsChecked} posts: ${recentComments.replyRequests.length} recent comments, ${newComments.length} new`
